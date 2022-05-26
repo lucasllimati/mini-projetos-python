@@ -11,7 +11,7 @@ def compactar_tudo(diretorio, ignore_zips=True):
     if ignore_zips:
         nomesarquivos = [fn for fn in nomesarquivos if not fn.endswith('.zip')]
 
-    # 
+    # lista todos os arquivos e pastas do caminho informado.
     for nome in nomesarquivos:
         fullpath = os.path.join(diretorio, nome)
         # print(f"FullPath {fullpath}")
@@ -22,7 +22,7 @@ def compactar_tudo(diretorio, ignore_zips=True):
             arquivozip = ZipFile(nomezip, "a", compression=ZIP_DEFLATED)
             # print(f"NomeZip {nomezip}")
 
-            # Percorre o diretório para encontrar arquivo dentro das pastas
+            # Percorre o diretório para encontrar arquivos dentro das pastas (caminho normal e relativo)
             for raiz, dirs, arquivos in os.walk(fullpath):
                 for arq in arquivos:
                     relativo = os.path.relpath(raiz, diretorio)
@@ -38,6 +38,7 @@ def compactar_tudo(diretorio, ignore_zips=True):
             arquivozip.write(fullpath, nome)
             arquivozip.close()
 
+    # Retorna o número de arquivos compactados.
     return len(nomesarquivos)
 
 if __name__ == '__main__':
