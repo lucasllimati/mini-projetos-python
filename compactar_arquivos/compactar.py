@@ -6,20 +6,31 @@ from zipfile import ZipFile, ZIP_DEFLATED
 
 def compactar_tudo(diretorio, ignore_zips=True):
     nomesarquivos = os.listdir(diretorio)
+
+    # Ignora arquivos que já estão compactados/zipados.
     if ignore_zips:
         nomesarquivos = [fn for fn in nomesarquivos if not fn.endswith('.zip')]
 
+    # 
     for nome in nomesarquivos:
         fullpath = os.path.join(diretorio, nome)
+        # print(f"FullPath {fullpath}")
+
+        # Quanto for pasta 
         if os.path.isdir(fullpath):
             nomezip = os.path.join(diretorio, nome + '.zip')
             arquivozip = ZipFile(nomezip, "a", compression=ZIP_DEFLATED)
+            # print(f"NomeZip {nomezip}")
+
+            # Percorre o diretório para encontrar arquivo dentro das pastas
             for raiz, dirs, arquivos in os.walk(fullpath):
                 for arq in arquivos:
                     relativo = os.path.relpath(raiz, diretorio)
                     arquivozip.write(os.path.join(raiz, arq),
                                      os.path.join(relativo, arq))
             arquivozip.close()
+
+        # Quanto for arquivo 
         else:
             semextensao = nome.split('.')[0]
             nomezip = os.path.join(diretorio, semextensao + '.zip')
